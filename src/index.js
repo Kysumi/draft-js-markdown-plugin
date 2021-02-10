@@ -300,7 +300,7 @@ const createMarkdownPlugin = (_config = {}) => {
           return {
             component: CheckableListItem,
             props: {
-              onChangeChecked: e => {
+              onChangeChecked: (e) => {
                 e.preventDefault();
                 setTimeout(() =>
                   setEditorState(
@@ -381,7 +381,12 @@ const createMarkdownPlugin = (_config = {}) => {
 
       return "not-handled";
     },
-    handleBeforeInput(character, editorState, { setEditorState }) {
+    handleBeforeInput(
+      character,
+      editorState,
+      eventTimestamp,
+      { setEditorState }
+    ) {
       // If we're in a code block - don't transform markdown
       if (inCodeBlock(editorState)) return "not-handled";
 
