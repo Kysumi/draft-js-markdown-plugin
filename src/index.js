@@ -6,15 +6,9 @@ import {
   CHECKABLE_LIST_ITEM,
 } from "draft-js-checkable-list-item";
 
-import { Map, OrderedSet, is } from "immutable";
+import { Map, is } from "immutable";
 import CodeBlock from "./components/Code";
-import {
-  getDefaultKeyBinding,
-  Modifier,
-  EditorState,
-  RichUtils,
-  DefaultDraftInlineStyle,
-} from "draft-js";
+import { Modifier, EditorState, RichUtils } from "draft-js";
 import adjustBlockDepth from "./modifiers/adjustBlockDepth";
 import handleBlockType from "./modifiers/handleBlockType";
 import handleInlineStyle from "./modifiers/handleInlineStyle";
@@ -29,7 +23,6 @@ import insertText from "./modifiers/insertText";
 import changeCurrentBlockType from "./modifiers/changeCurrentBlockType";
 import createLinkDecorator from "./decorators/link";
 import createImageDecorator from "./decorators/image";
-import { replaceText, getCurrentLine } from "./utils";
 import {
   CODE_BLOCK_REGEX,
   CODE_BLOCK_TYPE,
@@ -56,8 +49,6 @@ const defaultLanguages = {
   svg: "SVG",
   swift: "Swift",
 };
-
-const INLINE_STYLE_CHARACTERS = ["*", "_", "`", "~"];
 
 const defaultRenderSelect = ({ options, onChange, selectedValue }) => (
   <select value={selectedValue} onChange={onChange}>
@@ -293,7 +284,7 @@ const createMarkdownPlugin = (_config = {}) => {
 
     blockRendererFn(
       block,
-      { setReadOnly, getReadOnly, setEditorState, getEditorState, getEditorRef }
+      { setReadOnly, getReadOnly, setEditorState, getEditorState }
     ) {
       switch (block.getType()) {
         case CHECKABLE_LIST_ITEM: {
@@ -410,7 +401,7 @@ const createMarkdownPlugin = (_config = {}) => {
       }
       return "not-handled";
     },
-    handlePastedText(text, html, editorState, { setEditorState }) {
+    handlePastedText(text, _, editorState, { setEditorState }) {
       if (inCodeBlock(editorState)) {
         setEditorState(insertText(editorState, text));
         return "handled";
